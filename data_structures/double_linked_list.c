@@ -1,8 +1,9 @@
 #include <stdio.h>
-#include "types.h"
-#include "../helper_functions.h"
 #include <stdbool.h>
 #include <stdlib.h>
+
+#include "types.h"
+#include "../misc/string_func.h"
 
 Node *initNode(Contact *contact)
 {
@@ -16,7 +17,7 @@ Node *initNode(Contact *contact)
 Node *insertByOrder(Node *head, Contact *new_contact)
 {
     Node *node_new_contact = initNode(new_contact);
-
+    Node *prev_node;
     Node *head_copy = head;
 
     if (head == NULL)
@@ -25,14 +26,16 @@ Node *insertByOrder(Node *head, Contact *new_contact)
         return head;
     }
 
-    while (isPreviousContact(head_copy->contact, node_new_contact->contact, false, 0) || head_copy->next != NULL)
+    while (head_copy != NULL && isPreviousContact(head_copy->contact, node_new_contact->contact, false, 0))
     {
+        prev_node = head_copy;
         head_copy = head_copy->next;
     }
-    if (head_copy->next == NULL)
+
+    if (head_copy == NULL)
     {
-        head_copy->next = node_new_contact;
-        node_new_contact->prev = head_copy;
+        prev_node->next = node_new_contact;
+        node_new_contact->prev = prev_node;
         return head;
     }
     if (head_copy == head)
@@ -42,12 +45,11 @@ Node *insertByOrder(Node *head, Contact *new_contact)
         head = node_new_contact;
         return head;
     }
-    head_copy = head_copy->prev;
 
-    node_new_contact->next = head_copy->next;
-    head_copy->next->prev = node_new_contact;
-    head_copy->next = node_new_contact;
-    node_new_contact->prev = head_copy;
+    prev_node->next = node_new_contact;
+    node_new_contact->prev = prev_node;
+    node_new_contact->next = head_copy;
+    head_copy->prev = node_new_contact;
 
     return head;
 }
@@ -67,6 +69,13 @@ Contact *pop(Node **head)
     (*head) = (*head)->next;
     free(temp_head);
     return temp;
+}
+
+bool isEmptyNode(Node *head) // double linked list
+{
+    if (head == NULL)
+        return true;
+    return false;
 }
 
 /*

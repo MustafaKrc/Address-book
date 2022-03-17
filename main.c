@@ -1,10 +1,9 @@
 #include <stdio.h>
 #include "menu.h"
-#include "book.h"
+#include "book_func/init.h"
 #include "data_structures/types.h"
 
 // test
-#include "helper_functions.h"
 
 /*
     ***pseudo code***

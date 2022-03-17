@@ -7,5 +7,6 @@
 
 Node *insertByOrder(Node *, Contact *);
 Contact *pop(Node **);
+bool isEmptyNode(Node *head);
 
 #endif

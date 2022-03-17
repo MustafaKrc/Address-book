@@ -92,7 +92,7 @@ typedef struct MatchedContacts
     Contact **matches;
 } MatchedContacts;
 
-typedef struct EditedContacts // not sure
+typedef struct EditedContacts // needed for reverting changes
 {
     unsigned int count;
     Contact *edited_contacts;

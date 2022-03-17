@@ -1,16 +1,16 @@
-#ifdef _WIN32
-#include <Windows.h>
-#else
-#include <unistd.h>
-#endif
-
 #include <stdio.h>
 #include <stdlib.h>
-#include "data_structures/types.h"
 #include <string.h>
-#include "helper_functions.h"
-#include "book.h"
+
 #include "file_operations.h"
+
+#include "data_structures/types.h"
+
+#include "book_func/add_del_edit.h"
+#include "book_func/search.h"
+#include "book_func/print.h"
+
+#include "misc/string_func.h"
 
 MenuOption getOption(InputType input_type, const char *message)
 {
@@ -81,9 +81,9 @@ MenuOption getOption(InputType input_type, const char *message)
 void menuWelcome()
 {
     printf("******* Address Book *******\n");
-    sleep(1);
+    sleepScreen(1);
     printf("Note: Changes will be applied after saving!\n\n");
-    sleep(3);
+    sleepScreen(3);
 }
 
 Status askSaveFile(AddressBook **book, Node **edited_contacts)
@@ -103,17 +103,21 @@ Status updatePrompt(char **main_menu_prompt, Contact **picked_contact)
     if (*picked_contact != NULL)
     {
         sprintf(*main_menu_prompt,
-                "Please choose one of actions below!\n1-)Add Contact\n2-)Search and Pick Contact\n3-)Edit Contact                                            %s\n4-)Delete Contact                                        Name and Surname: %s %s\n5-)List All Contacts                                         Phone Number: %s\n6-)Save Changes                                                     Email: %s\n7-)Discard Last Change\n8-)Discard All Changes\n9-)Revert Changes\n0-)Save and Exit\n",
+                "Please choose one of actions below!\n1-)Add Contact\n2-)Search and Pick Contact\n3-)Edit Contact                                            %s\n4-)Delete Contact                                        Name and Surname: %s %s\n5-)List All Contacts                                         Phone Number: %s\n6-)Save Changes                                                     Email: %s\n7-)Discard Last Change\n8-)Discard All Changes\n9-)Revert Changes\n0-)Exit\n",
                 "Picked Contact: ", (*picked_contact)->f_name, (*picked_contact)->l_name, (*picked_contact)->phone_number, (*picked_contact)->email);
     }
     else
     {
-        sprintf(*main_menu_prompt, "Please choose one of actions below!\n1-)Add Contact\n2-)Search and Pick Contact%65s\n3-)Edit Contact\n4-)Delete Contact\n5-)List All Contacts\n6-)Save Changes\n7-)Discard Last Change\n8-)Discard All Changes\n9-)Revert Changes\n0-)Save and Exit\n",
+        sprintf(*main_menu_prompt, "Please choose one of actions below!\n1-)Add Contact\n2-)Search and Pick Contact%65s\n3-)Edit Contact\n4-)Delete Contact\n5-)List All Contacts\n6-)Save Changes\n7-)Discard Last Change\n8-)Discard All Changes\n9-)Revert Changes\n0-)Exit\n",
                 "Pick any contact to see information here");
     }
 
     return exit_success;
 }
+
+// ASK NOT TO SAVE BEFORE EXİT AND CHANGE İT TO EXİT
+// SEGMANTATION FAULT İF NO CONTACT İS ADDED AND USER TRIES TO SEARCH !!
+// after file saving,and loading book,,, picked contact will be gone!
 
 Status menu(AddressBook **book, Node *edited_contacts, Contact **picked_contact) // parameters: PartialAddressBook *address_book
 {
@@ -122,8 +126,7 @@ Status menu(AddressBook **book, Node *edited_contacts, Contact **picked_contact)
     clearScreen();
     menuWelcome();
 
-    // different kind of inpput for printing picked contact infos at the right side!;
-    char *main_menu_prompt = (char *)malloc(sizeof(char) * 512);
+    char *main_menu_prompt = (char *)malloc(sizeof(char) * 700);
 
     updatePrompt(&main_menu_prompt, picked_contact);
     operation = getOption(input_integer, main_menu_prompt);
@@ -184,12 +187,13 @@ Status menu(AddressBook **book, Node *edited_contacts, Contact **picked_contact)
             printf("Saved!\n\n");
             break;
         case close_app:
+            printf("%d", close_app);
             askSaveFile(book, &edited_contacts);
 
             clearScreen();
             printf("Closing...\n");
-            sleep(1);
-            break;
+            sleepScreen(1);
+            return exit_success;
 
         default:
             printf("Invalid!\n");

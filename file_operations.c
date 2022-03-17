@@ -1,9 +1,10 @@
 #include <stdio.h>
 #include <string.h>
+
+#include "book_func/init.h"
 #include "data_structures/types.h"
 #include "data_structures/double_linked_list.h"
-#include "helper_functions.h"
-#include "book.h"
+#include "misc/string_func.h"
 
 #define CONTACT_FILE "contacts.vcf"
 #define TEMP_FILE "temp.vcf"
@@ -108,15 +109,11 @@ Status saveFile(AddressBook **book, Node **edited_contacts_head)
             return exit_failure_invalid_contact_stat;
         }
     }
-    printf("NOT HERE 2\n");
 
     fclose(new_file);
     rename(TEMP_FILE, CONTACT_FILE);
-    printf("asd\n");
     free(*book);
-    printf("qwe\n");
     *book = initBook();
-    printf("NOT HERE3\n");
 
     return exit_success;
 }
@@ -124,6 +121,7 @@ Status saveFile(AddressBook **book, Node **edited_contacts_head)
 Status quickSaveFile(AddressBook **book, Node **edited_contacts)
 {
     saveFile(book, edited_contacts);
+    // also load?
     return exit_success;
 }
 
