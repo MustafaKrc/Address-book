@@ -2,9 +2,11 @@
 #include <string.h>
 
 #include "init.h"
+#include "print.h"
 #include "../menu.h"
 #include "../data_structures/types.h"
 #include "../data_structures/double_linked_list.h"
+#include "../data_structures/stack.h"
 #include "../misc/string_func.h"
 
 Status getInfo(Contact *contact)
@@ -61,7 +63,7 @@ Status addContact(Node **head_edited_contacts)
     return exit_success;
 }
 
-Status deleteContact(AddressBook *book, Contact **picked_contact)
+Status deleteContact(AddressBook *book, Contact **picked_contact, Node **deleted_contacts_stack)
 {
     if (*picked_contact == NULL)
     {
@@ -69,15 +71,28 @@ Status deleteContact(AddressBook *book, Contact **picked_contact)
         return exit_not_picked_contact;
     }
     (*picked_contact)->stat = deleted;
-    *picked_contact = NULL;
+    *deleted_contacts_stack = stackPush(*picked_contact, *deleted_contacts_stack);
+    // picked_contact = NULL;
     printf("Deleted the picked contact!\n");
     return exit_success;
 }
 
-Status editContact(AddressBook *book)
+Status editContact(Contact **picked_contact, Node **edited_contacts, Node **deleted_contacts)
 {
-    // init new contact, get info, set contact new_info to old infos(new contact),
-    // set contact new info to new created contact(old contact)
+    Contact *dummy_contact = initContact();
+    getInfo(dummy_contact);
+    (*picked_contact)->stat = deleted;
+
+    *deleted_contacts = stackPush(*picked_contact, *deleted_contacts);
+    *edited_contacts = insertByOrder(*edited_contacts, dummy_contact);
+
+    return exit_success;
+}
+
+Status listContacts(AddressBook *book)
+{
+    printContacts(book->contacts, book->contact_count);
+    // enter anything to continue
 
     return exit_success;
 }

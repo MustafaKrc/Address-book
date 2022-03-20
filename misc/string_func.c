@@ -34,28 +34,16 @@ bool isSameContact(Contact *contact, Contact *dummy_contact, SearchType search_t
     case byName:
         if (strcmp(dummy_contact->f_name, "-") == 0)
         {
-            if (compareCaseIgnore(dummy_contact->l_name, contact->l_name))
-            {
-                return true;
-            }
-            return false;
+            return compareCaseIgnore(dummy_contact->l_name, contact->l_name);
         }
         else if (strcmp(dummy_contact->l_name, "-") == 0)
         {
-            if (compareCaseIgnore(dummy_contact->f_name, contact->f_name))
-            {
-                return true;
-            }
-            return false;
+            return compareCaseIgnore(dummy_contact->f_name, contact->f_name);
         }
         else
         {
-            if (compareCaseIgnore(dummy_contact->f_name, contact->f_name) &&
-                compareCaseIgnore(dummy_contact->l_name, contact->l_name))
-            {
-                return true;
-            }
-            return false;
+            return (compareCaseIgnore(dummy_contact->f_name, contact->f_name) &&
+                    compareCaseIgnore(dummy_contact->l_name, contact->l_name));
         }
     case byPhoneNumber:
         return compareCaseIgnore(dummy_contact->phone_number, contact->phone_number);

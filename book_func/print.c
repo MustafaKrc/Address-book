@@ -27,7 +27,7 @@ void printContactHeader()
     printf("_________________________________");
     printf("_\n");
 
-    printf("|                            Name and Surname                            ");
+    printf("|                              Name and Surname                          ");
     printf("|   Phone Number  ");
     printf("|               Email              ");
     printf("|\n");

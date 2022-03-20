@@ -3,12 +3,11 @@
 #include <string.h>
 
 #include "file_operations.h"
-
 #include "data_structures/types.h"
-
-#include "book_func/add_del_edit.h"
+#include "book_func/add_del_edit_list.h"
 #include "book_func/search.h"
 #include "book_func/print.h"
+#include "book_func/discard.h"
 
 #include "misc/string_func.h"
 
@@ -54,11 +53,8 @@ MenuOption getOption(InputType input_type, const char *message)
         case 6:
             return save_changes;
         case 7:
-            return discard_last_change;
-        case 8:
             return discard_all_changes;
-        case 9:
-            return revert_savings;
+
         case 0:
             if (strcmp("0", int_input_safe) == 0)
             {
@@ -86,13 +82,13 @@ void menuWelcome()
     sleepScreen(3);
 }
 
-Status askSaveFile(AddressBook **book, Node **edited_contacts)
+Status askSaveFile(AddressBook **book, Node **edited_contacts, Node *deleted_contacts)
 {
     MenuOption grant = getOption(input_char, "Would you like to save now? (Y/N): ");
 
     if (grant == yes)
     {
-        return quickSaveFile(book, edited_contacts);
+        return quickSaveFile(book, edited_contacts, deleted_contacts);
     }
     return exit_success;
 }
@@ -103,12 +99,12 @@ Status updatePrompt(char **main_menu_prompt, Contact **picked_contact)
     if (*picked_contact != NULL)
     {
         sprintf(*main_menu_prompt,
-                "Please choose one of actions below!\n1-)Add Contact\n2-)Search and Pick Contact\n3-)Edit Contact                                            %s\n4-)Delete Contact                                        Name and Surname: %s %s\n5-)List All Contacts                                         Phone Number: %s\n6-)Save Changes                                                     Email: %s\n7-)Discard Last Change\n8-)Discard All Changes\n9-)Revert Changes\n0-)Exit\n",
+                "Please choose one of actions below!\n1-)Add Contact\n2-)Search and Pick Contact\n3-)Edit Contact                                            %s\n4-)Delete Contact                                        Name and Surname: %s %s\n5-)List All Contacts                                         Phone Number: %s\n6-)Save Changes                                                     Email: %s\n7-)Discard All Changes\n0-)Exit\n",
                 "Picked Contact: ", (*picked_contact)->f_name, (*picked_contact)->l_name, (*picked_contact)->phone_number, (*picked_contact)->email);
     }
     else
     {
-        sprintf(*main_menu_prompt, "Please choose one of actions below!\n1-)Add Contact\n2-)Search and Pick Contact%65s\n3-)Edit Contact\n4-)Delete Contact\n5-)List All Contacts\n6-)Save Changes\n7-)Discard Last Change\n8-)Discard All Changes\n9-)Revert Changes\n0-)Exit\n",
+        sprintf(*main_menu_prompt, "Please choose one of actions below!\n1-)Add Contact\n2-)Search and Pick Contact%65s\n3-)Edit Contact\n4-)Delete Contact\n5-)List All Contacts\n6-)Save Changes\n7-)Discard All Changes\n0-)Exit\n",
                 "Pick any contact to see information here");
     }
 
@@ -119,7 +115,9 @@ Status updatePrompt(char **main_menu_prompt, Contact **picked_contact)
 // SEGMANTATION FAULT İF NO CONTACT İS ADDED AND USER TRIES TO SEARCH !!
 // after file saving,and loading book,,, picked contact will be gone!
 
-Status menu(AddressBook **book, Node *edited_contacts, Contact **picked_contact) // parameters: PartialAddressBook *address_book
+// contact import from phones
+
+Status menu(AddressBook **book, Node *edited_contacts, Contact **picked_contact, Node *deleted_contacts_stack) // parameters: PartialAddressBook *address_book
 {
     MenuOption operation;
 
@@ -139,11 +137,12 @@ Status menu(AddressBook **book, Node *edited_contacts, Contact **picked_contact)
         {
         case add_contact:
             addContact(&edited_contacts);
-            askSaveFile(book, &edited_contacts);
+            askSaveFile(book, &edited_contacts, deleted_contacts_stack);
             clearScreen();
             break;
         case search_contact:
             searchContact(*book, picked_contact);
+            sleepScreen(1);
             clearScreen();
             if (*picked_contact != NULL)
             {
@@ -152,43 +151,39 @@ Status menu(AddressBook **book, Node *edited_contacts, Contact **picked_contact)
 
             break;
         case edit_contact:
-            printf("Not implemented yet!\n");
+            editContact(picked_contact, &edited_contacts, &deleted_contacts_stack);
+            askSaveFile(book, &edited_contacts, deleted_contacts_stack);
+            // clearScreen();
+
             break;
         case delete_contact:
             clearScreen();
-            if (deleteContact(*book, picked_contact) != exit_not_picked_contact)
+            if (deleteContact(*book, picked_contact, &deleted_contacts_stack) != exit_not_picked_contact)
             {
-                askSaveFile(book, &edited_contacts);
+                askSaveFile(book, &edited_contacts, deleted_contacts_stack);
                 clearScreen();
             }
 
             break;
         case list_contacts:
             clearScreen();
-            // funct here
-            printf("Not implemented yet!\n");
+            listContacts(*book);
 
-            break;
-        case discard_last_change:
-            clearScreen();
-            printf("Not implemented yet!\n");
             break;
         case discard_all_changes:
             clearScreen();
-            printf("Not implemented yet!\n");
+            discardAllChanges(&edited_contacts, deleted_contacts_stack);
+            printf("Discarded all non saved changes!\n");
             break;
-        case revert_savings:
-            clearScreen();
-            printf("Not implemented yet!\n");
-            break;
+
         case save_changes:
-            quickSaveFile(book, &edited_contacts);
+            quickSaveFile(book, &edited_contacts, deleted_contacts_stack);
             clearScreen();
             printf("Saved!\n\n");
             break;
         case close_app:
             printf("%d", close_app);
-            askSaveFile(book, &edited_contacts);
+            askSaveFile(book, &edited_contacts, deleted_contacts_stack);
 
             clearScreen();
             printf("Closing...\n");

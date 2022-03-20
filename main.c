@@ -26,7 +26,9 @@ int main(void)
     AddressBook *book = initBook();
     Node *edited_contacts = initEditedContacts();
     Contact *picked_contact = NULL;
-    menu(&book, edited_contacts, &picked_contact);
+    Node *deleted_contacts = NULL;
+
+    menu(&book, edited_contacts, &picked_contact, deleted_contacts);
 
     // test
     // printf("%s %s %s %s\n", picked_contact->f_name, picked_contact->l_name, picked_contact->phone_number, picked_contact->email);

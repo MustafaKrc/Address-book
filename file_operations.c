@@ -4,6 +4,7 @@
 #include "book_func/init.h"
 #include "data_structures/types.h"
 #include "data_structures/double_linked_list.h"
+#include "data_structures/stack.h"
 #include "misc/string_func.h"
 
 #define CONTACT_FILE "contacts.vcf"
@@ -39,15 +40,13 @@ Status loadFile(AddressBook *book)
     return exit_success;
 }
 
-Status saveFile(AddressBook **book, Node **edited_contacts_head)
+Status saveFile(AddressBook **book, Node **edited_contacts_head, Node **deleted_contacts)
 {
-    // DONT FORGET TO FREE SAVED CONTACTS
 
     FILE *new_file = fopen(TEMP_FILE, "a+");
     if (new_file == NULL)
         return exit_failure_cannot_open_file;
 
-    unsigned int deleted_contact_count = 0;
     unsigned int contact_index = 0;
     unsigned int file_contact_index = 0;
     Contact *temp;
@@ -89,19 +88,8 @@ Status saveFile(AddressBook **book, Node **edited_contacts_head)
                     temp->email);
             file_contact_index++;
             free(temp);
-
-            break;
-        case edited:
-            fprintf(new_file, "%u %s %s %s %s\n",
-                    file_contact_index, temp->new_info->f_name,
-                    temp->new_info->l_name, temp->new_info->phone_number,
-                    temp->new_info->email);
-            file_contact_index++;
-            free(temp);
             break;
         case deleted:
-            // needed for freeing contact objects
-            deleted_contact_count++;
             free(temp);
             break;
 
@@ -109,6 +97,9 @@ Status saveFile(AddressBook **book, Node **edited_contacts_head)
             return exit_failure_invalid_contact_stat;
         }
     }
+
+    // need to clear deleted_contacts if it is not empty
+    *deleted_contacts = NULL;
 
     fclose(new_file);
     rename(TEMP_FILE, CONTACT_FILE);
@@ -118,15 +109,15 @@ Status saveFile(AddressBook **book, Node **edited_contacts_head)
     return exit_success;
 }
 
-Status quickSaveFile(AddressBook **book, Node **edited_contacts)
+Status quickSaveFile(AddressBook **book, Node **edited_contacts, Node *deleted_contacts)
 {
-    saveFile(book, edited_contacts);
-    // also load?
+    saveFile(book, edited_contacts, &deleted_contacts);
+    loadFile(*book);
     return exit_success;
 }
 
-Status safeCloseApp(AddressBook **book, Node **edited_contacts)
+Status safeCloseApp(AddressBook **book, Node **edited_contacts, Node *deleted_contacts)
 {
-    saveFile(book, edited_contacts);
+    saveFile(book, edited_contacts, &deleted_contacts);
     return exit_success;
 }

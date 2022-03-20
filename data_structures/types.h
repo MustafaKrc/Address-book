@@ -17,9 +17,7 @@ typedef enum
     delete_contact,
     list_contacts,
     save_changes,
-    discard_last_change,
     discard_all_changes,
-    revert_savings,
     close_app,
     yes,
     no
@@ -49,7 +47,6 @@ typedef enum
 typedef enum
 {
     unchanged,
-    edited,
     deleted
 } ContactStatus;
 
@@ -91,12 +88,5 @@ typedef struct MatchedContacts
     unsigned int count;
     Contact **matches;
 } MatchedContacts;
-
-typedef struct EditedContacts // needed for reverting changes
-{
-    unsigned int count;
-    Contact *edited_contacts;
-
-} EditedContact;
 
 #endif

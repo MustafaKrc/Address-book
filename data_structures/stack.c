@@ -4,9 +4,6 @@
 #include "types.h"
 #include <string.h>
 
-/*
-    is needed for reverting changes
-*/
 Node *stackPush(Contact *contact, Node *head)
 {
     Node *new_node = (Node *)malloc(sizeof(Node));
@@ -26,7 +23,10 @@ Contact *stackPop(Node **head)
     Contact *contact = (*head)->contact;
     Node *temp = *head;
     *head = (*head)->next;
-    (*head)->prev = NULL;
+    if (*head != NULL)
+    {
+        (*head)->prev = NULL;
+    }
     free(temp);
     return contact;
 }

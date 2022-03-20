@@ -4,7 +4,7 @@
 #include "data_structures/types.h"
 
 Status loadFile(AddressBook *book);
-Status quickSaveFile(AddressBook **book, Node **edited_contacts);
-Status safeCloseApp(AddressBook **book, Node **edited_contacts);
+Status quickSaveFile(AddressBook **book, Node **edited_contacts, Node *deleted_contacts);
+Status safeCloseApp(AddressBook **book, Node **edited_contacts, Node *deleted_contacts);
 
 #endif
