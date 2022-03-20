@@ -3,7 +3,7 @@
 
 #include <stdbool.h>
 
-#include "../data_structures/types.h"
+#include "types.h"
 
 bool compareCaseIgnore(char *word1, char *word2);
 bool strstrCaseIgnore(char *word1, char *word2);

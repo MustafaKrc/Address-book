@@ -1,13 +1,13 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "init.h"
-#include "print.h"
-#include "../menu.h"
-#include "../data_structures/types.h"
-#include "../data_structures/double_linked_list.h"
-#include "../data_structures/stack.h"
-#include "../misc/string_func.h"
+#include "../header/init.h"
+#include "../header/print.h"
+#include "../header/menu.h"
+#include "../header/types.h"
+#include "../header/double_linked_list.h"
+#include "../header/stack.h"
+#include "../header/string_func.h"
 
 Status getInfo(Contact *contact)
 {

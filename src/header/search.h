@@ -1,7 +1,7 @@
 #ifndef SEARCH_H
 #define SEARCH_h
 
-#include "../data_structures/types.h"
+#include "types.h"
 
 Status searchContact(AddressBook *book, Contact **picked_contact);
 

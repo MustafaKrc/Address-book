@@ -1,7 +1,7 @@
 #ifndef PRINT_H
 #define PRINT_H
 
-#include "../data_structures/types.h"
+#include "types.h"
 
 void clearScreen();
 void sleepScreen(int amount_in_seconds);

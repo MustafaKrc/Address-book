@@ -7,8 +7,8 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "../data_structures/types.h"
-#include "../misc/math_func.h"
+#include "../header/types.h"
+#include "../header/math_func.h"
 
 void sleepScreen(int amount_in_seconds)
 {
@@ -92,6 +92,13 @@ void printContactFooter()
 
 void printContacts(Contact **contacts, unsigned int count)
 {
+
+    if (count == 0)
+    {
+        printf("There isn't any contact!\n");
+        sleepScreen(2);
+        return;
+    }
     unsigned int index = 0;
     printContactHeader();
 

@@ -1,13 +1,14 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
+#include <stdlib.h>
 
-#include "print.h"
-#include "../menu.h"
-#include "../data_structures/types.h"
-#include "../data_structures/double_linked_list.h"
-#include "../data_structures/stack.h"
-#include "../misc/string_func.h"
+#include "../header/print.h"
+#include "../header/menu.h"
+#include "../header/types.h"
+#include "../header/double_linked_list.h"
+#include "../header/stack.h"
+#include "../header/string_func.h"
 
 Status getName(char f_name[F_NAME_LEN], char l_name[L_NAME_LEN])
 {

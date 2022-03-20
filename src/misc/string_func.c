@@ -2,7 +2,7 @@
 #include <string.h>
 #include <ctype.h>
 
-#include "../data_structures/types.h"
+#include "../header/types.h"
 
 bool compareCaseIgnore(char *word1, char *word2)
 {

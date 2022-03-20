@@ -1,7 +1,7 @@
 #ifndef BOOK_H
 #define BOOK_H
 
-#include "../data_structures/types.h"
+#include "types.h"
 
 AddressBook *initBook();
 Contact *initContact();

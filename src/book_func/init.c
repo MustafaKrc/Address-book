@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "../file_operations.h"
-#include "../data_structures/types.h"
+#include "../header/file_operations.h"
+#include "../header/types.h"
 
 AddressBook *initBook()
 {

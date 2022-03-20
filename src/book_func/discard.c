@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "../data_structures/types.h"
-#include "../data_structures/stack.h"
-#include "../data_structures/double_linked_list.h"
+#include "../header/types.h"
+#include "../header/stack.h"
+#include "../header/double_linked_list.h"
 
 Status discardAllChanges(Node **edited_contacts, Node *deleted_contacts)
 {
