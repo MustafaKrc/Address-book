@@ -5,9 +5,9 @@
 #define L_NAME_LEN 33
 #define NUMBER_LEN 16
 #define EMAIL_LEN 33
-#define MAX_LINE_LENGTH 200
+#define MAX_LINE_LENGTH 200 // must be greater than F_NAME_LEN + L_NAME_LEN + NUMBER_LEN + EMAIL_LEN
 
-#define CONTACT_COUNT 20000 // max contact count for now
+#define CONTACT_COUNT 32768 // 2^15(about 1.75 mb of memory) max contact count
 
 typedef enum
 {

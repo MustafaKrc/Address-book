@@ -141,7 +141,7 @@ Status menu(AddressBook **book, Node *edited_contacts, Contact **picked_contact,
             clearScreen();
             if (*picked_contact != NULL)
             {
-                printf("Picked the account!\n\n");
+                printf("Picked the contact!\n\n");
             }
             break;
 
@@ -167,7 +167,7 @@ Status menu(AddressBook **book, Node *edited_contacts, Contact **picked_contact,
             clearScreen();
             if (*picked_contact != NULL)
             {
-                printf("Picked the account!\n\n");
+                printf("Picked the contact!\n\n");
             }
             break;
 

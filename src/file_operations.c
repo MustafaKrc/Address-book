@@ -111,7 +111,7 @@ Status saveFile(AddressBook **book, Node **edited_contacts_head, Node **deleted_
     fclose(new_file);
     rename(TEMP_FILE, CONTACT_FILE);
     free(*book);
-    *book = NULL;
+    *book = (AddressBook *)malloc(sizeof(AddressBook));
 
     return exit_success;
 }
