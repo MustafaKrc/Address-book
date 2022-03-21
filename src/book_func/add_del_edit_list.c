@@ -12,6 +12,9 @@
 
 Status getInfo(Contact *contact)
 {
+    /*
+        Gets user inputs for contact parameter
+    */
     MenuOption confirmation;
 getInfo:
     printf("(OPTIONAL, enter - to skip!) Please enter the name of new contact!:(32MAX) ");
@@ -56,6 +59,9 @@ askPhoneNumber:
 
 Status addContact(Node **head_edited_contacts)
 {
+    /*
+        creates new contact variable and stores it in head_edited_contacts
+    */
     Contact *new_contact = initContact();
     getInfo(new_contact);
 
@@ -66,6 +72,9 @@ Status addContact(Node **head_edited_contacts)
 
 Status deleteContact(AddressBook *book, Contact **picked_contact, Node **deleted_contacts_stack)
 {
+    /*
+        marks the picked contact to be deleted
+    */
     if (*picked_contact == NULL)
     {
         printf("You must pick a contact first!\n");
@@ -80,6 +89,10 @@ Status deleteContact(AddressBook *book, Contact **picked_contact, Node **deleted
 
 Status editContact(Contact **picked_contact, Node **edited_contacts, Node **deleted_contacts)
 {
+    /*
+        Marks the picked contact to be deleted and creates new contact and asks for information
+        sets the picked contact to NULL
+    */
     if (*picked_contact == NULL)
     {
         printf("You must pick a contact first!\n\n");
@@ -102,14 +115,18 @@ Status editContact(Contact **picked_contact, Node **edited_contacts, Node **dele
 
 Contact *pickAmongAllContacts(AddressBook *book)
 {
+    /*
+        Asks user to pick one of listed contacts
+        Returns the picked contact
+    */
     int picked_index;
-    char picked_index_safe[3];
+    char picked_index_safe[10];
     Contact *picked_contact;
 ask_contact_all:
 
     printf("Enter the index number of the contact you want to pick and pin to main menu!\nEnter 0 to quit picking\n");
 
-    scanf("%2s", picked_index_safe);
+    scanf("%9s", picked_index_safe);
     clearBuffer();
     picked_index = atoi(picked_index_safe);
 
@@ -141,6 +158,10 @@ ask_contact_all:
 
 Status listContacts(AddressBook *book, Contact **picked_contact)
 {
+    /*
+        Prints all loaded contacts and asks user to pick one
+        Changes the value of picked_value to picked value, to NULL if user doesnt select anything
+    */
     printContacts(book->contacts, book->contact_count);
     if (book->contact_count > 0)
     {

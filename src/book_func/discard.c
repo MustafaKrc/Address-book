@@ -7,6 +7,10 @@
 
 Status discardAllChanges(Node **edited_contacts, Node *deleted_contacts)
 {
+    /*
+        Discarding all non saved changes
+        Saved changes are not tracked, therefore cannot reversed
+    */
 
     while (*edited_contacts != NULL)
     {
@@ -15,7 +19,7 @@ Status discardAllChanges(Node **edited_contacts, Node *deleted_contacts)
 
     while (stackTop(deleted_contacts) != NULL)
     {
-        stackTop(deleted_contacts)->stat = unchanged;
+        stackTop(deleted_contacts)->stat = unchanged; // setting stat to unchanged from deleted
         stackPop(&deleted_contacts);
     }
     return exit_success;

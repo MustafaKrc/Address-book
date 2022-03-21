@@ -14,7 +14,7 @@ MenuOption getOption(InputType input_type, const char *message)
 {
     char char_input[3];
     int int_input;
-    char int_input_safe[3];
+    char int_input_safe[3]; // using string in scanf in order to prevent scanf from reading char which causes infinite loop
     printf("%s\n", message);
     switch (input_type)
     {
@@ -83,12 +83,13 @@ void menuWelcome()
     sleepScreen(3);
 }
 
-Status askSaveFile(AddressBook **book, Node **edited_contacts, Node *deleted_contacts)
+Status askSaveFile(AddressBook **book, Node **edited_contacts, Node *deleted_contacts, Contact **picked_contact)
 {
-    // make picked contact null or search it first
+    // file will be saved and loaded if grant is taken
     MenuOption grant = getOption(input_char, "Would you like to save now? (Y/N): ");
     if (grant == yes)
     {
+        *picked_contact = NULL;
         return quickSaveFile(book, edited_contacts, deleted_contacts);
     }
     return exit_success;
@@ -96,7 +97,7 @@ Status askSaveFile(AddressBook **book, Node **edited_contacts, Node *deleted_con
 
 Status updatePrompt(char **main_menu_prompt, Contact **picked_contact)
 {
-
+    // Main menu prompt will be edited if a contact is picked to display
     if (*picked_contact != NULL)
     {
         sprintf(*main_menu_prompt,
@@ -112,11 +113,6 @@ Status updatePrompt(char **main_menu_prompt, Contact **picked_contact)
     return exit_success;
 }
 
-// ASK NOT TO SAVE BEFORE EXİT AND CHANGE İT TO EXİT
-// after file saving,and loading book,,, picked contact will be gone!
-
-// contact import from phones
-
 Status menu(AddressBook **book, Node *edited_contacts, Contact **picked_contact, Node *deleted_contacts_stack)
 {
     MenuOption operation;
@@ -125,12 +121,9 @@ Status menu(AddressBook **book, Node *edited_contacts, Contact **picked_contact,
     menuWelcome();
 
     char *main_menu_prompt = (char *)malloc(sizeof(char) * 700);
-
     updatePrompt(&main_menu_prompt, picked_contact);
-    operation = getOption(input_integer, main_menu_prompt);
+    operation = getOption(input_integer, main_menu_prompt); // getting the operation type for main loop to start
 
-    // ask if user wants to save
-    // print info about you need to save the file to apply changes!
     while (true)
     {
         switch (operation)
@@ -139,8 +132,9 @@ Status menu(AddressBook **book, Node *edited_contacts, Contact **picked_contact,
             clearScreen();
             addContact(&edited_contacts);
             printf("Account added!\n\n");
-            askSaveFile(book, &edited_contacts, deleted_contacts_stack);
+            askSaveFile(book, &edited_contacts, deleted_contacts_stack, picked_contact);
             break;
+
         case search_contact:
             clearScreen();
             searchContact(*book, picked_contact);
@@ -149,24 +143,24 @@ Status menu(AddressBook **book, Node *edited_contacts, Contact **picked_contact,
             {
                 printf("Picked the account!\n\n");
             }
-
             break;
+
         case edit_contact:
             clearScreen();
             if (editContact(picked_contact, &edited_contacts, &deleted_contacts_stack) != exit_not_picked_contact)
             {
-                askSaveFile(book, &edited_contacts, deleted_contacts_stack);
+                askSaveFile(book, &edited_contacts, deleted_contacts_stack, picked_contact);
             }
-
             break;
+
         case delete_contact:
             clearScreen();
             if (deleteContact(*book, picked_contact, &deleted_contacts_stack) != exit_not_picked_contact)
             {
-                askSaveFile(book, &edited_contacts, deleted_contacts_stack);
+                askSaveFile(book, &edited_contacts, deleted_contacts_stack, picked_contact);
             }
-
             break;
+
         case list_contacts:
             clearScreen();
             listContacts(*book, picked_contact);
@@ -175,8 +169,8 @@ Status menu(AddressBook **book, Node *edited_contacts, Contact **picked_contact,
             {
                 printf("Picked the account!\n\n");
             }
-
             break;
+
         case discard_all_changes:
             clearScreen();
             discardAllChanges(&edited_contacts, deleted_contacts_stack);
@@ -185,10 +179,12 @@ Status menu(AddressBook **book, Node *edited_contacts, Contact **picked_contact,
 
         case save_changes:
             quickSaveFile(book, &edited_contacts, deleted_contacts_stack);
+            *picked_contact = NULL;
             break;
+
         case close_app:
             clearScreen();
-            askSaveFile(book, &edited_contacts, deleted_contacts_stack);
+            askSaveFile(book, &edited_contacts, deleted_contacts_stack, picked_contact);
             sleepScreen(1);
             clearScreen();
             printf("Closing...\n\n");

@@ -12,16 +12,25 @@
 
 void sleepScreen(int amount_in_seconds)
 {
+    /*
+        Freezing screen for given amount in seconds
+    */
     sleep(amount_in_seconds);
 }
 
 void clearScreen()
 {
+    /*
+        Clearing screen
+    */
     printf("\e[1;1H\e[2J");
 }
 
 void printContactHeader()
 {
+    /*
+        printing matched contact header
+    */
     printf("_________________________________________________________________________");
     printf("____________________");
     printf("_________________________________");
@@ -35,6 +44,9 @@ void printContactHeader()
 
 void printContactSeperator()
 {
+    /*
+        printing the matched contact seperator
+    */
     printf("|                                                                        ");
     printf("|                 ");
     printf("|                                  ");
@@ -43,6 +55,9 @@ void printContactSeperator()
 
 void printContact(Contact *contact, unsigned int print_index)
 {
+    /*
+        Prints the contact information with adjusted spacing for the table
+    */
     int name_space = F_NAME_LEN + L_NAME_LEN - digitCount(print_index) - strlen(contact->f_name) - strlen(contact->l_name) + 4;
     int number_space = NUMBER_LEN - strlen(contact->phone_number) + 1;
     int email_space = EMAIL_LEN - strlen(contact->email) + 1;
@@ -84,6 +99,9 @@ void printContact(Contact *contact, unsigned int print_index)
 
 void printContactFooter()
 {
+    /*
+        prints the matched contact footer
+    */
     printf("|________________________________________________________________________");
     printf("____________________");
     printf("_________________________________");
@@ -92,7 +110,9 @@ void printContactFooter()
 
 void printContacts(Contact **contacts, unsigned int count)
 {
-
+    /*
+        Prints the matched contacts table
+    */
     if (count == 0)
     {
         printf("There isn't any contact!\n");

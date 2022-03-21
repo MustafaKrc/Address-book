@@ -7,6 +7,9 @@
 
 bool compareCaseIgnore(char *word1, char *word2)
 {
+    /*
+        Comparing string (Case insensitive)
+    */
     char char1 = tolower(*word1);
     char char2 = tolower(*word2);
     while (*word1 != '\0')
@@ -30,9 +33,14 @@ bool compareCaseIgnore(char *word1, char *word2)
 
 bool isSameContact(Contact *contact, Contact *dummy_contact, SearchType search_type)
 {
+    /*
+        Comparing contacts by given search_type parameter
+        Comparing is done by comparing strings of contact(only the search_type strings)
+    */
     switch (search_type)
     {
     case byName:
+        // ignoring if string is "-"
         if (strcmp(dummy_contact->f_name, "-") == 0)
         {
             return compareCaseIgnore(dummy_contact->l_name, contact->l_name);
@@ -57,6 +65,10 @@ bool isSameContact(Contact *contact, Contact *dummy_contact, SearchType search_t
 
 bool strstrCaseIgnore(const char *haystack, const char *needle)
 {
+    /*
+        Implementation of strstr function in string.h but case insensitive
+        Returns true if substring exists
+    */
     char *pptr = (char *)needle;
     char *start = (char *)haystack;
     char *sptr;
@@ -94,9 +106,13 @@ bool strstrCaseIgnore(const char *haystack, const char *needle)
 
 bool isSubstringContact(Contact *contact, Contact *dummy_contact, SearchType search_type)
 {
+    /*
+        Returns true if search_type of dummy_contact is substring of search_type of contact
+    */
     switch (search_type)
     {
     case byName:
+        // ignoring if string is "-"
         if (strcmp(dummy_contact->f_name, "-") == 0)
         {
             return strstrCaseIgnore(contact->l_name, dummy_contact->l_name);
@@ -112,11 +128,9 @@ bool isSubstringContact(Contact *contact, Contact *dummy_contact, SearchType sea
         }
 
     case byPhoneNumber:
-
         return strstrCaseIgnore(contact->phone_number, dummy_contact->phone_number);
 
     case byEmail:
-
         return strstrCaseIgnore(contact->email, dummy_contact->email);
     }
     return false;
@@ -124,8 +138,15 @@ bool isSubstringContact(Contact *contact, Contact *dummy_contact, SearchType sea
 
 bool isPreviousContact(Contact *contact1, Contact *contact2, bool is_surname, int index)
 {
+    /*
+        Returns true if contact1 is alphabetically previous than contact2 (names)
+
+        is_surname should be false at initial call(function will switch to true if two contact has same name)
+        index should be 0 at initial call as it indicates the indexes of chars that will be compared
+    */
     char first_char1;
     char first_char2;
+    // using tolower to prevent upper cases being previous than lower cases in everycase
     if (is_surname)
     {
         first_char1 = tolower(contact1->l_name[index]);
@@ -166,6 +187,9 @@ bool isPreviousContact(Contact *contact1, Contact *contact2, bool is_surname, in
 
 bool isOnlyDigit(char *input)
 {
+    /*
+        Returns true if given string is only digit
+    */
     while (*input)
     {
         if (isdigit(*input++) == 0)
@@ -178,6 +202,9 @@ bool isOnlyDigit(char *input)
 
 void clearBuffer()
 {
+    /*
+        Clears input buffer to prevent unwanted behaviour
+    */
     char ch;
     while ((ch = getchar()) != '\n' && ch != EOF)
         ;

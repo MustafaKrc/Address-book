@@ -7,6 +7,9 @@
 
 Node *initNode(Contact *contact)
 {
+    /*
+        Initializing new Node object with given contact and returning it
+    */
     Node *new_node = (Node *)malloc(sizeof(Node));
     new_node->next = NULL;
     new_node->prev = NULL;
@@ -16,6 +19,9 @@ Node *initNode(Contact *contact)
 
 Node *insertByOrder(Node *head, Contact *new_contact)
 {
+    /*
+        Inserts the given contact into the given head variable by alphabetical order
+    */
     Node *node_new_contact = initNode(new_contact);
     Node *prev_node;
     Node *head_copy = head;
@@ -56,6 +62,9 @@ Node *insertByOrder(Node *head, Contact *new_contact)
 
 Contact *pop(Node **head)
 {
+    /*
+        Returns the contact of head element and pops the head element
+    */
     Contact *temp = (*head)->contact;
     Node *temp_head = *head;
 
@@ -71,124 +80,12 @@ Contact *pop(Node **head)
     return temp;
 }
 
-bool isEmptyNode(Node *head) // double linked list
+bool isEmptyNode(Node *head) // doubly linked list
 {
+    /*
+        Returns true if given head node is empty
+    */
     if (head == NULL)
         return true;
     return false;
 }
-
-/*
-
-void Print(Node *head)
-{
-    printf("Linked list = ");
-    while (head != NULL)
-    {
-        printf(" %d", head->contact);
-        head = head->next;
-    }
-    printf("\n");
-}
-
-Node *Reverse(Node *head)
-{
-    Node *temp;
-    while (head != NULL)
-    {
-        temp = head->prev;
-        head->prev = head->next;
-        head->next = temp;
-        head = head->prev;
-    }
-
-    return temp->prev;
-}
-
-Node *Remove(Node *head, int index)
-{
-    if (index < 0)
-    {
-        printf("Invalid!\n");
-        return head;
-    }
-    if (index == 0)
-    {
-        Node *new_head;
-        new_head = head->next;
-        head->next->prev = NULL;
-        free(head);
-
-        return new_head;
-    }
-
-    int curr_index = -1;
-    Node *removed_element;
-    Node *head_copy = head;
-
-    while (head != NULL)
-    {
-        curr_index += 1;
-        if (curr_index == index - 1)
-        {
-            removed_element = head->next;
-            if (removed_element->next != NULL)
-            {
-                head->next = head->next->next;
-                head->next->prev = head;
-            }
-            else
-            {
-                head->next = NULL;
-            }
-
-            free(removed_element);
-            break;
-        }
-        head = head->next;
-    }
-    if (curr_index != index - 1)
-    {
-        printf("Linked List is too short!\n");
-    }
-    return head_copy;
-}
-
-int Get(Node *head, int index)
-{
-    int curr_index = -1;
-
-    while (head != NULL)
-    {
-        curr_index += 1;
-        if (curr_index == index)
-        {
-            return head->contact;
-        }
-        head = head->next;
-    }
-    printf("Linked list is too short!\n");
-    return 0;
-}
-
-void PrintBackwards(Node *head)
-{
-    if (head == NULL)
-    {
-        return;
-    }
-    while (head->next != NULL)
-    {
-        head = head->next;
-    }
-    printf("Reverse Linked List = ");
-
-    while (head != NULL)
-    {
-        printf(" %d", head->contact);
-        head = head->prev;
-    }
-    printf("\n");
-}
-
-*/
