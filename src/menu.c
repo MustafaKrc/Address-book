@@ -12,6 +12,9 @@
 
 MenuOption getOption(InputType input_type, const char *message)
 {
+    /*
+        Asks user the given message and returns the input
+    */
     char char_input[3];
     int int_input;
     char int_input_safe[3]; // using string in scanf in order to prevent scanf from reading char which causes infinite loop
@@ -77,6 +80,9 @@ MenuOption getOption(InputType input_type, const char *message)
 
 void menuWelcome()
 {
+    /*
+        printing welcome message
+    */
     printf("******* Address Book *******\n");
     sleepScreen(1);
     printf("Note: Changes will be applied after saving!\n\n");
@@ -85,7 +91,9 @@ void menuWelcome()
 
 Status askSaveFile(AddressBook **book, Node **edited_contacts, Node *deleted_contacts, Contact **picked_contact)
 {
-    // file will be saved and loaded if grant is taken
+    /*
+        file will be saved and loaded if grant is taken
+    */
     MenuOption grant = getOption(input_char, "Would you like to save now? (Y/N): ");
     if (grant == yes)
     {
@@ -97,7 +105,9 @@ Status askSaveFile(AddressBook **book, Node **edited_contacts, Node *deleted_con
 
 Status updatePrompt(char **main_menu_prompt, Contact **picked_contact)
 {
-    // Main menu prompt will be edited if a contact is picked to display
+    /*
+        Main menu prompt will be edited if a contact is picked to display
+    */
     if (*picked_contact != NULL)
     {
         sprintf(*main_menu_prompt,
@@ -115,6 +125,9 @@ Status updatePrompt(char **main_menu_prompt, Contact **picked_contact)
 
 Status menu(AddressBook **book, Node *edited_contacts, Contact **picked_contact, Node *deleted_contacts_stack)
 {
+    /*
+        Main loop for menu
+    */
     MenuOption operation;
 
     clearScreen();
