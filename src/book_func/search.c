@@ -15,10 +15,10 @@ Status getName(char f_name[F_NAME_LEN], char l_name[L_NAME_LEN])
 ask_names:
     printf("(Enter - to skip!) Enter the name of contact: ");
     scanf("%32s", f_name);
-    fflush(stdin);
+    clearBuffer();
     printf("(Enter - to skip!) Enter the surname of contact: ");
     scanf("%32s", l_name);
-    fflush(stdin);
+    clearBuffer();
 
     if (strcmp(f_name, "-") == 0 && strcmp(l_name, "-") == 0)
     {
@@ -34,7 +34,7 @@ Status getPhoneNumber(char phone_number[NUMBER_LEN])
 ask_phone_number:
     printf("Enter the phone number of contact: ");
     scanf("%32s", phone_number);
-    fflush(stdin);
+    clearBuffer();
     if (!isOnlyDigit(phone_number))
     {
         printf("Invalid number!\n");
@@ -48,7 +48,7 @@ Status getEmail(char email[EMAIL_LEN])
 ask_email:
     printf("Enter the email of contact: ");
     scanf("%32s", email);
-    fflush(stdin);
+    clearBuffer();
     if (strcmp(email, "-") == 0)
     {
         printf("Invalid!\n");
@@ -154,7 +154,6 @@ void printMatchedContacts(MatchedContacts *matched_contacts)
 MatchedContacts *AdvancedSearch(AddressBook *book, MatchedContacts *matched_contacts,
                                 Contact *dummy_contact, SearchType search_type)
 {
-    // segmentation fault if no contacts match
     free(matched_contacts->matches);
 
     matched_contacts = (MatchedContacts *)calloc(sizeof(MatchedContacts), 1);
@@ -193,7 +192,7 @@ ask_contact_again:
     {
         printf("Enter the index number of the contact you want to pick and pin to main menu!\nEnter 0 to quit picking\n: ");
         scanf("%2s", picked_index_safe);
-        fflush(stdin);
+        clearBuffer();
         picked_index = atoi(picked_index_safe);
     }
     else
@@ -245,7 +244,7 @@ ask_contact:
         printf("Enter -1 to do advanced search\n");
     }
     scanf("%2s", picked_index_safe);
-    fflush(stdin);
+    clearBuffer();
     picked_index = atoi(picked_index_safe);
 
     switch (picked_index)
@@ -453,7 +452,6 @@ Contact *findContact(AddressBook *book, SearchType search_type)
 
 Status searchContact(AddressBook *book, Contact **picked_contact)
 {
-    // full matching name +"-" or maybe non matching surname causing segmentation fault
 
     char temp[3];
     SearchType search_type;
@@ -461,7 +459,7 @@ Status searchContact(AddressBook *book, Contact **picked_contact)
 ask_search_type:
     printf("How would you like to search contact:\n1- By Name 2- By Phone number 3- By Email: ");
     scanf("%2s", temp);
-    fflush(stdin);
+    clearBuffer();
 
     if (strcmp(temp, "1") == 0)
     {

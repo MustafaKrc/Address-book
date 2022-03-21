@@ -6,6 +6,6 @@
 Status addContact(Node **head_edited_contacts);
 Status deleteContact(AddressBook *book, Contact **picked_contacts, Node **deleted_contacts);
 Status editContact(Contact **picked_contact, Node **edited_contacts, Node **deleted_contacts);
-Status listContacts(AddressBook *book);
+Status listContacts(AddressBook *book, Contact **picked_contact);
 
 #endif

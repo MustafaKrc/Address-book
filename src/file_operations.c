@@ -7,6 +7,7 @@
 #include "header/double_linked_list.h"
 #include "header/stack.h"
 #include "header/string_func.h"
+#include "header/print.h"
 
 #define CONTACT_FILE "contacts.vcf"
 #define TEMP_FILE "temp.vcf"
@@ -98,8 +99,6 @@ Status saveFile(AddressBook **book, Node **edited_contacts_head, Node **deleted_
             return exit_failure_invalid_contact_stat;
         }
     }
-
-    // need to clear deleted_contacts if it is not empty
     *deleted_contacts = NULL;
 
     fclose(new_file);
@@ -113,6 +112,8 @@ Status saveFile(AddressBook **book, Node **edited_contacts_head, Node **deleted_
 Status quickSaveFile(AddressBook **book, Node **edited_contacts, Node *deleted_contacts)
 {
     saveFile(book, edited_contacts, &deleted_contacts);
+    clearScreen();
+    printf("Saved!\n\n");
     loadFile(*book);
     return exit_success;
 }

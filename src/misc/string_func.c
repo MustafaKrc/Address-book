@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
 #include <ctype.h>
@@ -173,4 +174,11 @@ bool isOnlyDigit(char *input)
         }
     }
     return 1;
+}
+
+void clearBuffer()
+{
+    char ch;
+    while ((ch = getchar()) != '\n' && ch != EOF)
+        ;
 }

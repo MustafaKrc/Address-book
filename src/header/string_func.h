@@ -13,5 +13,6 @@ bool isSubstringContact(Contact *contact, Contact *dummy_contact, SearchType sea
 bool isPreviousContact(Contact *contact1, Contact *contact2, bool is_surname, int starting_index);
 
 bool isOnlyDigit(char *input);
+bool clearBuffer();
 
 #endif
