@@ -70,7 +70,7 @@ Status addContact(Node **head_edited_contacts)
     return exit_success;
 }
 
-Status deleteContact(AddressBook *book, Contact **picked_contact, Node **deleted_contacts_stack)
+Status deleteContact(Contact **picked_contact, Node **deleted_contacts_stack)
 {
     /*
         marks the picked contact to be deleted
@@ -98,14 +98,8 @@ Status editContact(Contact **picked_contact, Node **edited_contacts, Node **dele
         printf("You must pick a contact first!\n\n");
         return exit_not_picked_contact;
     }
-
-    Contact *dummy_contact = initContact();
-    getInfo(dummy_contact);
-    (*picked_contact)->stat = deleted;
-    (*picked_contact) = NULL;
-
-    *deleted_contacts = stackPush(*picked_contact, *deleted_contacts);
-    *edited_contacts = insertByOrder(*edited_contacts, dummy_contact);
+    addContact(edited_contacts);
+    deleteContact(picked_contact, deleted_contacts);
 
     clearScreen();
     printf("Edited the account!\n\n");

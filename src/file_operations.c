@@ -10,7 +10,7 @@
 #include "header/print.h"
 
 #define CONTACT_FILE "contacts.vcf"
-#define TEMP_FILE "temp.vcf" // new save will be written here and changed name to CONTACT_FILE
+#define TEMP_FILE "temp.vcf" // new save will be written here and will be changed name to CONTACT_FILE
 
 Status loadFile(AddressBook *book)
 {
@@ -105,8 +105,8 @@ Status saveFile(AddressBook **book, Node **edited_contacts_head, Node **deleted_
             return exit_failure_invalid_contact_stat;
         }
     }
-    *deleted_contacts = NULL; // deleting deleted_contacts just in case
-                              // freeing inside elements will throw double free error as they were freed in discardAllChanges() function.
+    *deleted_contacts = (Node *)malloc(sizeof(Node)); // assigning new pointer to freed deleted_contact node
+                                                      // freeing inside elements will throw double free error as they were freed in discardAllChanges() function.
 
     fclose(new_file);
     rename(TEMP_FILE, CONTACT_FILE);

@@ -168,7 +168,7 @@ Status menu(AddressBook **book, Node *edited_contacts, Contact **picked_contact,
 
         case delete_contact:
             clearScreen();
-            if (deleteContact(*book, picked_contact, &deleted_contacts_stack) != exit_not_picked_contact)
+            if (deleteContact(picked_contact, &deleted_contacts_stack) != exit_not_picked_contact)
             {
                 askSaveFile(book, &edited_contacts, deleted_contacts_stack, picked_contact);
             }
