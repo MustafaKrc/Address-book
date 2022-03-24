@@ -29,13 +29,19 @@ Contact *stackPop(Node **head)
     /*
         Pops the head node of given head node and returns its contact
     */
+    if (*head == NULL)
+    {
+        return NULL;
+    }
     Contact *contact = (*head)->contact;
     Node *temp = *head;
     *head = (*head)->next;
-    if (*head != NULL)
+    if (*head == NULL)
     {
-        (*head)->prev = NULL;
+        free(temp);
+        return contact;
     }
+    (*head)->prev = NULL;
     free(temp);
     return contact;
 }

@@ -80,6 +80,11 @@ Status deleteContact(Contact **picked_contact, Node **deleted_contacts_stack)
         printf("You must pick a contact first!\n");
         return exit_not_picked_contact;
     }
+    if ((*picked_contact)->stat == deleted)
+    {
+        printf("This contact was edited before!\n");
+        return exit_edited_contact;
+    }
     (*picked_contact)->stat = deleted;
     *deleted_contacts_stack = stackPush(*picked_contact, *deleted_contacts_stack);
     *picked_contact = NULL;
@@ -98,11 +103,16 @@ Status editContact(Contact **picked_contact, Node **edited_contacts, Node **dele
         printf("You must pick a contact first!\n\n");
         return exit_not_picked_contact;
     }
+    if ((*picked_contact)->stat == deleted)
+    {
+        printf("This contact was edited before!\n");
+        return exit_edited_contact;
+    }
     addContact(edited_contacts);
     deleteContact(picked_contact, deleted_contacts);
 
     clearScreen();
-    printf("Edited the account!\n\n");
+    printf("Edited the contact!\n\n");
 
     return exit_success;
 }

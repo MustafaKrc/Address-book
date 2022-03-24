@@ -3,6 +3,6 @@
 
 #include "types.h"
 
-Status discardAllChanges(Node **edited_contacts, Node *deleted_contacts);
+Status discardAllChanges(Node **edited_contacts, Node **deleted_contacts);
 
 #endif

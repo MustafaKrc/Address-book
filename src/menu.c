@@ -160,7 +160,7 @@ Status menu(AddressBook **book, Node *edited_contacts, Contact **picked_contact,
 
         case edit_contact:
             clearScreen();
-            if (editContact(picked_contact, &edited_contacts, &deleted_contacts_stack) != exit_not_picked_contact)
+            if (editContact(picked_contact, &edited_contacts, &deleted_contacts_stack) == exit_success)
             {
                 askSaveFile(book, &edited_contacts, deleted_contacts_stack, picked_contact);
             }
@@ -168,7 +168,7 @@ Status menu(AddressBook **book, Node *edited_contacts, Contact **picked_contact,
 
         case delete_contact:
             clearScreen();
-            if (deleteContact(picked_contact, &deleted_contacts_stack) != exit_not_picked_contact)
+            if (deleteContact(picked_contact, &deleted_contacts_stack) == exit_success)
             {
                 askSaveFile(book, &edited_contacts, deleted_contacts_stack, picked_contact);
             }
@@ -186,7 +186,7 @@ Status menu(AddressBook **book, Node *edited_contacts, Contact **picked_contact,
 
         case discard_all_changes:
             clearScreen();
-            discardAllChanges(&edited_contacts, deleted_contacts_stack);
+            discardAllChanges(&edited_contacts, &deleted_contacts_stack);
             printf("Discarded all non saved changes!\n\n");
             break;
 

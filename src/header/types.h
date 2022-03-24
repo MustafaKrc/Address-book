@@ -31,6 +31,7 @@ typedef enum
     exit_failure_invalid_file_ptr,
     exit_failure_cannot_open_file,
     exit_failure_invalid_contact_stat,
+    exit_edited_contact,
     invalid_input_type,
     exit_not_picked_contact,
     exit_save_error

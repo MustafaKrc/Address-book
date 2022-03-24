@@ -450,9 +450,21 @@ Contact *findContact(AddressBook *book, SearchType search_type)
             switch (opinion)
             {
             case yes:
-                picked_contact = pickContact(book, matched_contacts, dummy_contact, search_type, false);
-                free(dummy_contact);
-                return picked_contact;
+                matched_contacts = AdvancedSearch(book, matched_contacts, dummy_contact, search_type);
+                if (matched_contacts->count > 0)
+                {
+                    printMatchedContacts(matched_contacts);
+                    picked_contact = pickContact(book, matched_contacts, dummy_contact, search_type, true);
+                    free(dummy_contact);
+                    return picked_contact;
+                }
+                else
+                {
+                    printf("There was no matching contact!\n");
+                    sleepScreen(2);
+                    free(dummy_contact);
+                    return NULL;
+                }
             case no:
                 free(dummy_contact);
                 return NULL;
@@ -478,9 +490,21 @@ Contact *findContact(AddressBook *book, SearchType search_type)
             switch (opinion)
             {
             case yes:
-                picked_contact = pickContact(book, matched_contacts, dummy_contact, search_type, false);
-                free(dummy_contact);
-                return picked_contact;
+                matched_contacts = AdvancedSearch(book, matched_contacts, dummy_contact, search_type);
+                if (matched_contacts->count > 0)
+                {
+                    printMatchedContacts(matched_contacts);
+                    picked_contact = pickContact(book, matched_contacts, dummy_contact, search_type, true);
+                    free(dummy_contact);
+                    return picked_contact;
+                }
+                else
+                {
+                    printf("There was no matching contact!\n");
+                    sleepScreen(2);
+                    free(dummy_contact);
+                    return NULL;
+                }
             case no:
                 free(dummy_contact);
                 return NULL;

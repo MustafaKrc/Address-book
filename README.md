@@ -69,6 +69,8 @@ To do:
 - Ability to import contacts from Android and IOS
 - Ability to export contacts to Android and IOS
 
+Known bugs:
+- Non-ASCII characters causing contact table to have wrong spacing
 
 
 
