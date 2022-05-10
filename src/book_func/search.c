@@ -68,6 +68,32 @@ ask_email:
     return exit_success;
 }
 
+void printMatchedContacts(MatchedContacts *matched_contacts)
+{
+    /*
+        printing matched contacts
+    */
+    printContacts(matched_contacts->matches, matched_contacts->count);
+}
+
+void appendMatchedContact(AddressBook *book, MatchedContacts *matched_contacts,
+                          unsigned long int *arr_size, unsigned long int matched_contact_index)
+{
+    /*
+        appending the matched contact to the matched contacts object
+    */
+    if (matched_contacts->count < *arr_size - 1)
+    {
+        matched_contacts->matches[(matched_contacts->count)++] = book->contacts[matched_contact_index];
+    }
+    else
+    {
+        *arr_size *= 4;
+        matched_contacts->matches = (Contact **)realloc(matched_contacts->matches, *arr_size);
+        matched_contacts->matches[(matched_contacts->count)++] = book->contacts[matched_contact_index];
+    }
+}
+
 MatchedContacts *findBinarySearch(AddressBook *book, Contact *dummy_contact, SearchType search_type)
 {
     /*
@@ -76,15 +102,8 @@ MatchedContacts *findBinarySearch(AddressBook *book, Contact *dummy_contact, Sea
 
         Returns array of matched contacts
     */
-    if (book->contact_count == 0)
-    {
-        printf("There isn't any contact!\n");
-        sleepScreen(2);
-        return NULL;
-    }
-
     MatchedContacts *matched_contacts = (MatchedContacts *)malloc(sizeof(MatchedContacts));
-    long int arr_size = 4; // to keep track of memory alloctaion to matched_contacts
+    unsigned long int arr_size = 4; // to keep track of memory alloctaion to matched_contacts
     matched_contacts->count = 0;
     matched_contacts->matches = (Contact **)malloc(sizeof(Contact *) * arr_size);
     long int lower = 0;
@@ -112,6 +131,7 @@ MatchedContacts *findBinarySearch(AddressBook *book, Contact *dummy_contact, Sea
             while (stackTop(stack_head) != NULL)
             {
                 ordered_contact = stackPop(&stack_head);
+                // cannot use appendMatchedContact function here, because the assigned contact is not book indexed(it comes from stack)
                 if (matched_contacts->count < arr_size - 1)
                 {
                     matched_contacts->matches[(matched_contacts->count)++] = ordered_contact;
@@ -124,30 +144,13 @@ MatchedContacts *findBinarySearch(AddressBook *book, Contact *dummy_contact, Sea
                 }
             }
             // adding the initally found contact into mathces
-            if (matched_contacts->count < arr_size - 1)
-            {
-                matched_contacts->matches[(matched_contacts->count)++] = book->contacts[middle];
-            }
-            else
-            {
-                arr_size *= 4;
-                matched_contacts->matches = (Contact **)realloc(matched_contacts->matches, arr_size);
-                matched_contacts->matches[(matched_contacts->count)++] = book->contacts[middle];
-            }
+            appendMatchedContact(book, matched_contacts, &arr_size, middle);
+
             // now it will check following contacts if they are same and adding them into matches
             // no need for stack here because they are already ordered(checking forwards)
             while (middle + after_check <= book->contact_count - 1 && isSameContact(book->contacts[middle + after_check], dummy_contact, search_type))
             {
-                if (matched_contacts->count < arr_size - 1)
-                {
-                    matched_contacts->matches[(matched_contacts->count)++] = book->contacts[middle + (after_check)++];
-                }
-                else
-                {
-                    arr_size *= 4;
-                    matched_contacts->matches = (Contact **)realloc(matched_contacts->matches, arr_size);
-                    matched_contacts->matches[(matched_contacts->count)++] = book->contacts[middle + (after_check)++];
-                }
+                appendMatchedContact(book, matched_contacts, &arr_size, (middle + (after_check)++));
             }
 
             return matched_contacts;
@@ -165,12 +168,25 @@ MatchedContacts *findBinarySearch(AddressBook *book, Contact *dummy_contact, Sea
     return matched_contacts;
 }
 
-void printMatchedContacts(MatchedContacts *matched_contacts)
+MatchedContacts *findLinearSearch(AddressBook *book, Contact *dummy_contact, SearchType search_type)
 {
     /*
-        printing matched contacts
+        Lineer search to find exact match of dummy contact in the book parameter by search_type
+        Returns array of matched contacts
     */
-    printContacts(matched_contacts->matches, matched_contacts->count);
+    MatchedContacts *matched_contacts = (MatchedContacts *)malloc(sizeof(MatchedContacts));
+    unsigned long int arr_size = 4;
+    matched_contacts->count = 0;
+    matched_contacts->matches = (Contact **)malloc(sizeof(Contact *) * arr_size);
+
+    for (unsigned int i = 0; i < book->contact_count; i++)
+    {
+        if (isSameContact(book->contacts[i], dummy_contact, search_type))
+        {
+            appendMatchedContact(book, matched_contacts, &arr_size, i);
+        }
+    }
+    return matched_contacts;
 }
 
 MatchedContacts *AdvancedSearch(AddressBook *book, MatchedContacts *matched_contacts,
@@ -185,7 +201,7 @@ MatchedContacts *AdvancedSearch(AddressBook *book, MatchedContacts *matched_cont
     free(matched_contacts->matches); // freeing previously found matched contacts
 
     matched_contacts = (MatchedContacts *)calloc(sizeof(MatchedContacts), 1);
-    unsigned int arr_size = 4;
+    unsigned long int arr_size = 4;
     matched_contacts->count = 0;
     matched_contacts->matches = (Contact **)malloc(sizeof(Contact *) * arr_size);
 
@@ -193,16 +209,7 @@ MatchedContacts *AdvancedSearch(AddressBook *book, MatchedContacts *matched_cont
     {
         if (isSubstringContact(book->contacts[i], dummy_contact, search_type))
         {
-            if (matched_contacts->count < arr_size - 1)
-            {
-                matched_contacts->matches[(matched_contacts->count)++] = book->contacts[i];
-            }
-            else
-            {
-                arr_size *= 4;
-                matched_contacts->matches = (Contact **)realloc(matched_contacts->matches, arr_size);
-                matched_contacts->matches[(matched_contacts->count)++] = book->contacts[i];
-            }
+            appendMatchedContact(book, matched_contacts, &arr_size, i);
         }
     }
     return matched_contacts;
@@ -333,42 +340,16 @@ ask_contact:
     }
 }
 
-MatchedContacts *findLinearSearch(AddressBook *book, Contact *dummy_contact, SearchType search_type)
+Status searchContact(AddressBook *book, Contact **pinned_contact)
 {
     /*
-        Lineer search to find exact match of dummy contact in the book parameter by search_type
-        Returns array of matched contacts
+        Asks user to select search_type and calls the findContact function
+        The picked contact will be written inside the given Contact** picked_contact parameter
     */
-    MatchedContacts *matched_contacts = (MatchedContacts *)malloc(sizeof(MatchedContacts));
-    unsigned int arr_size = 4;
-    matched_contacts->count = 0;
-    matched_contacts->matches = (Contact **)malloc(sizeof(Contact *) * arr_size);
 
-    for (unsigned int i = 0; i < book->contact_count; i++)
-    {
-        if (isSameContact(book->contacts[i], dummy_contact, search_type))
-        {
-            if (matched_contacts->count < arr_size - 1)
-            {
-                matched_contacts->matches[(matched_contacts->count)++] = book->contacts[i];
-            }
-            else
-            {
-                arr_size *= 4;
-                matched_contacts->matches = (Contact **)realloc(matched_contacts->matches, arr_size);
-                matched_contacts->matches[(matched_contacts->count)++] = book->contacts[i];
-            }
-        }
-    }
-    return matched_contacts;
-}
-
-Contact *findContact(AddressBook *book, SearchType search_type)
-{
-    /*
-        This function calls necessary search functions for search_types and gets needed inputs from user for the given search_type
-        Returns the picked contact or NULL if user doesnt select any
-    */
+    char ask_search_type[3];
+    SearchType search_type;
+    // Contact *searched_contact = NULL;
 
     char f_name[F_NAME_LEN];
     char l_name[L_NAME_LEN];
@@ -386,23 +367,22 @@ Contact *findContact(AddressBook *book, SearchType search_type)
     Contact *picked_contact = (Contact *)malloc(sizeof(Contact));
 
     MenuOption opinion;
+ask_search_type:
+    printf("How would you like to search contact:\n1- By Name 2- By Phone number 3- By Email: ");
+    scanf("%2s", ask_search_type);
+    clearBuffer();
 
-    switch (search_type)
+    if (strcmp(ask_search_type, "1") == 0)
     {
-    case byName:
+        search_type = byName;
+
         getName(f_name, l_name);
         matched_contacts = findBinarySearch(book, dummy_contact, search_type);
-        if (matched_contacts == NULL)
-        {
-            free(dummy_contact);
-            return NULL;
-        }
+
         if (matched_contacts->count > 0)
         {
             printMatchedContacts(matched_contacts);
             picked_contact = pickContact(book, matched_contacts, dummy_contact, search_type, false);
-            free(dummy_contact);
-            return picked_contact;
         }
         else
         {
@@ -415,34 +395,30 @@ Contact *findContact(AddressBook *book, SearchType search_type)
                 {
                     printMatchedContacts(matched_contacts);
                     picked_contact = pickContact(book, matched_contacts, dummy_contact, search_type, true);
-                    free(dummy_contact);
-                    return picked_contact;
                 }
                 else
                 {
                     printf("There was no matching contact!\n");
                     sleepScreen(2);
-                    free(dummy_contact);
-                    return NULL;
                 }
             case no:
-                free(dummy_contact);
-                return NULL;
+                break;
             default:
-                printf("This isnt possible or is it?\nin function: findContact\n");
+                // not possible
                 break;
             }
         }
+    }
+    else if (strcmp(ask_search_type, "2") == 0)
+    {
+        search_type = byPhoneNumber;
 
-    case byPhoneNumber:
         getPhoneNumber(phone_number);
         matched_contacts = findLinearSearch(book, dummy_contact, search_type);
         if (matched_contacts->count > 0)
         {
             printMatchedContacts(matched_contacts);
             picked_contact = pickContact(book, matched_contacts, dummy_contact, search_type, false);
-            free(dummy_contact);
-            return picked_contact;
         }
         else
         {
@@ -455,34 +431,30 @@ Contact *findContact(AddressBook *book, SearchType search_type)
                 {
                     printMatchedContacts(matched_contacts);
                     picked_contact = pickContact(book, matched_contacts, dummy_contact, search_type, true);
-                    free(dummy_contact);
-                    return picked_contact;
                 }
                 else
                 {
                     printf("There was no matching contact!\n");
                     sleepScreen(2);
-                    free(dummy_contact);
-                    return NULL;
                 }
             case no:
-                free(dummy_contact);
-                return NULL;
+                break;
             default:
-                printf("This isnt possible or is it?\nin function: findContact\n");
+                // not possible
                 break;
             }
         }
+    }
+    else if (strcmp(ask_search_type, "3") == 0)
+    {
+        search_type = byEmail;
 
-    case byEmail:
         getEmail(email);
         matched_contacts = findLinearSearch(book, dummy_contact, search_type);
         if (matched_contacts->count > 0)
         {
             printMatchedContacts(matched_contacts);
             picked_contact = pickContact(book, matched_contacts, dummy_contact, search_type, false);
-            free(dummy_contact);
-            return picked_contact;
         }
         else
         {
@@ -495,55 +467,19 @@ Contact *findContact(AddressBook *book, SearchType search_type)
                 {
                     printMatchedContacts(matched_contacts);
                     picked_contact = pickContact(book, matched_contacts, dummy_contact, search_type, true);
-                    free(dummy_contact);
-                    return picked_contact;
                 }
                 else
                 {
                     printf("There was no matching contact!\n");
                     sleepScreen(2);
-                    free(dummy_contact);
-                    return NULL;
                 }
             case no:
-                free(dummy_contact);
-                return NULL;
+                break;
             default:
-                printf("This isnt possible or is it?\nin function: findContact\n");
+                // not possible
                 break;
             }
         }
-    }
-    free(dummy_contact);
-    return NULL; // not necessity
-}
-
-Status searchContact(AddressBook *book, Contact **picked_contact)
-{
-    /*
-        Asks user to select search_type and calls the findContact function
-        The picked contact will be written inside the given Contact** picked_contact parameter
-    */
-
-    char temp[3];
-    SearchType search_type;
-    Contact *searched_contact;
-ask_search_type:
-    printf("How would you like to search contact:\n1- By Name 2- By Phone number 3- By Email: ");
-    scanf("%2s", temp);
-    clearBuffer();
-
-    if (strcmp(temp, "1") == 0)
-    {
-        search_type = byName;
-    }
-    else if (strcmp(temp, "2") == 0)
-    {
-        search_type = byPhoneNumber;
-    }
-    else if (strcmp(temp, "3") == 0)
-    {
-        search_type = byEmail;
     }
     else
     {
@@ -551,16 +487,9 @@ ask_search_type:
         goto ask_search_type;
     }
 
-    searched_contact = findContact(book, search_type);
+    // searched_contact = findContact(book, search_type);
+    free(dummy_contact);
+    *pinned_contact = picked_contact;
 
-    if (searched_contact == NULL)
-    {
-        *picked_contact = NULL;
-        // either not found or user quit finding
-    }
-    else
-    {
-        *picked_contact = searched_contact;
-    }
     return exit_success;
 }
